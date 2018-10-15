@@ -29,14 +29,16 @@ max out the memory and fail. I recommend doing as little as possible on the Ardu
 #include <Adafruit_ADS1015.h>
 
 Adafruit_ADS1115 ads;  /* Use this for the 16-bit version */
+/* Be sure to update this value based on the IC and the gain settings! */
+float multiplier = 6.144/(32768.0); /* ADS1115  @ +/- 6.144V gain (16-bit results) */
 
 void setup(void)
 {
   // 9600 baud rate
   Serial.begin(9600);
   
-  Serial.println("Getting differential reading from AIN0 (P) and AIN1 (N)");
-  Serial.println("ADC Range: +/- 6.144V (1 bit = 3mV/ADS1015, 0.1875mV/ADS1115)");
+  //Serial.println("Getting differential reading from AIN0 (P) and AIN1 (N)");
+  //Serial.println("ADC Range: +/- 6.144V (1 bit = 3mV/ADS1015, 0.1875mV/ADS1115)");
   
   // The ADC input range (or gain) can be changed via the following
   // functions, but be careful never to exceed VDD +0.3V max, or to
@@ -56,13 +58,9 @@ void setup(void)
  
 //
 void loop(){
-  int16_t results;
-  
-  /* Be sure to update this value based on the IC and the gain settings! */
-  float multiplier = 0.1875F; /* ADS1115  @ +/- 6.144V gain (16-bit results) */
-
-  results = ads.readADC_Differential_0_1();  
-   
-  Serial.println(results);
+  int16_t result = ads.readADC_Differential_0_1();  
+  Serial.print(result);
+  Serial.print(", ");
+  Serial.println(result * multiplier);
   delay(100);
 }

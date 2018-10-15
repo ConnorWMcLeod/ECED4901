@@ -51,8 +51,8 @@ void setup()
   table.addColumn("second");
   
   //the following are dummy columns for each data value. Add as many columns as you have data values. Customize the names as needed. Make sure they are in the same order as the order that Arduino is sending them!
-  table.addColumn("sensor1");
-  table.addColumn("sensor2");
+  table.addColumn("Result");
+  table.addColumn("Voltage");
  
 }
  
@@ -61,8 +61,7 @@ void serialEvent(Serial myPort){
   if (val!= null) { //We have a reading! Record it.
     val = trim(val); //gets rid of any whitespace or Unicode nonbreakable space
     println(val); //Optional, useful for debugging. If you see this, you know data is being sent. Delete if  you like. 
-    float sensorVal = float(val); //parses the packet from Arduino and places the valeus into the sensorVals array. I am assuming floats. Change the data type to match the datatype coming from Arduino. 
-   
+    float sensorVals[] = float(split(val, ',')); //parses the packet from Arduino and places the valeus into the sensorVals array. I am assuming floats. Change the data type to match the datatype coming from Arduino. 
     TableRow newRow = table.addRow(); //add a row for this new reading
     newRow.setInt("id", table.lastRowIndex());//record a unique identifier (the row's index)
     
@@ -75,7 +74,8 @@ void serialEvent(Serial myPort){
     newRow.setInt("second", second());
     
     //record sensor information. Customize the names so they match your sensor column names. 
-    newRow.setFloat("sensor1", sensorVal);
+    newRow.setFloat("Result", sensorVals[0]);
+    newRow.setFloat("Voltage", sensorVals[1]);
     
     readingCounter++; //optional, use if you'd like to write your file every numReadings reading cycles
     
